@@ -9,7 +9,17 @@
 
 using namespace geode::prelude;
 
-id initWithFrame(EAGLView* self, SEL selector, NSRect frameRect, NSOpenGLContext* context) {
+@interface TestView : NSOpenGLView {
+	
+}
+
+- (id) initWithFrame:(NSRect)frameRect shareContext:(NSOpenGLContext*)context;
+
+@end
+
+@implementation TestView
+
+- (id) initWithFrame:(NSRect)frameRect shareContext:(NSOpenGLContext*)context {
 	
 	NSOpenGLPixelFormatAttribute attribs[] =
     {
@@ -23,22 +33,29 @@ id initWithFrame(EAGLView* self, SEL selector, NSRect frameRect, NSOpenGLContext
 
     NSOpenGLPixelFormat *pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
 
-    if( (self = [(NSOpenGLView*)self initWithFrame:frameRect pixelFormat:[pixelFormat autorelease]]) ) {
+    if( (self = [super initWithFrame:frameRect pixelFormat:[pixelFormat autorelease]]) ) {
 		
 		if( context )
 			[self setOpenGLContext:context];
 
 		// event delegate
-		self.eventDelegate = [CCEventDispatcher sharedDispatcher];
+		((EAGLView*)self).eventDelegate = [CCEventDispatcher sharedDispatcher];
 	}
     
     cocos2d::CCEGLView::sharedOpenGLView()->setFrameSize(frameRect.size.width, frameRect.size.height);
     
-    [self setFrameZoomFactor:1.0f];
+    [(EAGLView*)self setFrameZoomFactor:1.0f];
 	
-	*reinterpret_cast<EAGLView**>(base::get() + 0x6a0b28) = self;
+	*reinterpret_cast<TestView**>(base::get() + 0x6a0b28) = self;
 	return self;
 }
+
+
+@end
+
+id initWithFrame(EAGLView* self, SEL selector, NSRect frameRect, NSOpenGLContext* context) {
+	return [(TestView*)self initWithFrame:frameRect shareContext:context];
+} 
 
 $execute {
 	if (auto res = ObjcHook::create("EAGLView", "initWithFrame:shareContext:", &initWithFrame)) {
