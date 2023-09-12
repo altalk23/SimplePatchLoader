@@ -17,6 +17,12 @@ if (WIN32)
     file(GLOB PLATFORM_SOURCES
         src/mh.cpp
     )
+elseif(APPLE)
+    file(GLOB PLATFORM_SOURCES
+        src/mh_stub.cpp
+        src/main.mm
+    )
+    set_source_files_properties(${PLATFORM_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 else()
     file(GLOB PLATFORM_SOURCES
         src/mh_stub.cpp
