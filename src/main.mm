@@ -27,7 +27,7 @@ using namespace geode::prelude;
 //		NSOpenGLPFANoRecovery,
 		NSOpenGLPFADoubleBuffer,
 		NSOpenGLPFADepthSize, 24,
-		(NSOpenGLPixelFormatAttribute)NSOpenGLProfileVersion3_2Core,
+		NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion4_1Core,
 		0
     };
 
@@ -45,6 +45,9 @@ using namespace geode::prelude;
     cocos2d::CCEGLView::sharedOpenGLView()->setFrameSize(frameRect.size.width, frameRect.size.height);
     
     [(EAGLView*)self setFrameZoomFactor:1.0f];
+
+    log::debug("OpenGL version = {}", (char const*)glGetString(GL_VERSION));
+	log::debug("GLSL version = {}", (char const*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 	
 	*reinterpret_cast<TestView**>(base::get() + 0x6a0b28) = self;
 	return self;
