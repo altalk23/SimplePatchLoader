@@ -39,7 +39,7 @@ using namespace geode::prelude;
 			[self setOpenGLContext:context];
 
 		// event delegate
-		((EAGLView*)self).eventDelegate = [CCEventDispatcher sharedDispatcher];
+		((EAGLView*)self).eventDelegate = [NSClassFromString(@"CCEventDispatcher") sharedDispatcher];
 	}
     
     cocos2d::CCEGLView::sharedOpenGLView()->setFrameSize(frameRect.size.width, frameRect.size.height);
